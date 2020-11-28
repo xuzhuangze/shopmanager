@@ -1,6 +1,14 @@
 <template>
   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" style="width: 400px" label-width="100px"
            class="demo-ruleForm">
+    <el-breadcrumb separator=">" class="bread-nav">
+      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/menu' }">菜单列表</el-breadcrumb-item>
+      <el-breadcrumb-item>添加</el-breadcrumb-item>
+    </el-breadcrumb>
+    <br>
+    <br>
+    <br>
     <h1>{{tip}}</h1>
     <!--菜单名称-->
     <el-form-item label="菜单名称" prop="title">
@@ -11,7 +19,7 @@
     <el-form-item label="上级菜单" prop="pid">
       <el-select v-model="ruleForm.pid" placeholder="请选择上级菜单">
         <el-option :value="0" label="顶级菜单"></el-option>
-        <el-option :value="1" label="一级菜单 "></el-option>
+        <el-option :value="item.id" :label="item.title" v-for="item in menuArr"></el-option>
       </el-select>
     </el-form-item>
 
@@ -48,6 +56,7 @@
 </template>
 <script>
   export default {
+
     data() {
       return {
         ruleForm: {
@@ -62,7 +71,6 @@
         rules: {
           title: [
             {required: true, message: '请输入菜单名称', trigger: 'blur'},
-
           ],
           pid: [
             {required: true, message: '请选择上级菜单', trigger: 'change'}
@@ -79,11 +87,15 @@
           status: [
             {required: true, message: '请选择状态', trigger: 'blur'}
           ]
-        }
+        },
+        menuArr: [],
       };
     },
 
     mounted() {
+      this.axios.get('api/menulist?pid=0').then((res) => {
+        this.menuArr = res.data.list;
+      })
       if (this.$route.params.id) {
         this.tip = '修改';
         this.axios.get('/api/menuinfo?id=' + this.$route.params.id).then(res => {

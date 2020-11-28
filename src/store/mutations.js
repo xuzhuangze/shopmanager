@@ -1,8 +1,6 @@
 export default {
-  add(state, info) {
-    state.infos.push(info)
+  getuserinfo(state, data) {
+    state.userinfo = data;
   },
-  del(state, index) {
-    state.infos.splice(index, 1)
-  }
+
 }
